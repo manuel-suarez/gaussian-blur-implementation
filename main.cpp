@@ -64,10 +64,10 @@ void ApplyGaussianBlur(const Mat& mat, Mat& dest, const Mat& kernel, int size)
 {
     cout << "Apply gaussian blur size: " << size << endl;
     dest = Mat::ones(mat.size[0], mat.size[1], mat.type());
-    /*for (int x = size/2; x < mat.size[0] - size/2; x++) {
-        for (int y = size/2; y < mat.size[1] - size/2; y++) {
+    for (int x = 0; x < mat.size[0]; x++) {
+        for (int y = 0; y < mat.size[1]; y++) {
             // Aplicamos kernel en el punto p con su vencidad N(q)
-            Point p(x,y);
+            Point p(y,x);
             // Calculamos kernel
             //uchar tc1, tc2, tc3;
             //tc1 = tc2 = tc3 = 0;
@@ -88,7 +88,7 @@ void ApplyGaussianBlur(const Mat& mat, Mat& dest, const Mat& kernel, int size)
             //intensity.val[2] = tc3;
             dest.at<Vec3b>(p) = intensity;
         }
-    }*/
+    }
 }
 
 int main()
