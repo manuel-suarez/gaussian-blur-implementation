@@ -60,7 +60,7 @@ Mat FilterCreation(int size)
     return result.clone();
 }
 
-Mat ApplyGaussianBlur(Mat mat, Mat kernel, int size)
+Mat ApplyGaussianBlur(Mat mat, Mat dest, Mat kernel, int size)
 {
     //mat.size
 }
@@ -81,16 +81,20 @@ int main()
     }
 
     cout << "Image channels: " << image.channels() << endl;
-    /*
+    cout << "Image dimensions: " << image.dims << endl;
+    cout << "Image size: " << image.size << endl;
+
     // Blur the image with 3x3 Gaussian kernel
     Mat image_blurred_with_3x3_kernel;
     Mat kernel_3x3 = FilterCreation(3);
-    GaussianBlur(image, image_blurred_with_3x3_kernel, Size(3, 3), 0);
+    ApplyGaussianBlur(image, image_blurred_with_3x3_kernel, kernel_3x3, 3);
+    //GaussianBlur(image, image_blurred_with_3x3_kernel, Size(3, 3), 0);
 
     // Blus the image with 5x5 Gaussian kernel
     Mat image_blurred_with_5x5_kernel;
     Mat kernel_5x5 = FilterCreation(5);
-    GaussianBlur(image, image_blurred_with_5x5_kernel, Size(5, 5), 0);
+    ApplyGaussianBlur(image, image_blurred_with_5x5_kernel, kernel_5x5, 5);
+    //GaussianBlur(image, image_blurred_with_5x5_kernel, Size(5, 5), 0);
 
     // Window's names
     String window_name = "Lotus";
