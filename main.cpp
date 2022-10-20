@@ -1,13 +1,17 @@
 //
 // Created by masuarez on 20/10/22.
 //
+#include <opencv2/opencv.hpp>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
 
+using namespace cv;
 using namespace std;
 
-void FilterCreation(double GKernel[][5])
+using namespace std;
+
+Mat FilterCreation(int size)
 {
     // initialising standard deviation to 1.0
     double sigma = 1.0;
@@ -16,29 +20,121 @@ void FilterCreation(double GKernel[][5])
     // sum is for normalization
     double sum = 0.0;
 
-    // generating 5x5 kernel
-    for (int x = -2; x <= 2; x++) {
-        for (int y = -2; y <= 2; y++) {
-            r = sqrt(x * x + y * y);
-            GKernel[x + 2][y + 2] = (exp(-(r * r) / s)) / (M_PI * s);
-            sum += GKernel[x + 2][y + 2];
+    // result
+    Mat result = Mat::zeros(size, size, CV_32F);
+    cout << "Check values 0" << endl;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            Point pt(i, j);
+            cout << pt << ", " << result.at<float>(pt) << "\t";
         }
+        cout << endl;
     }
+    cout << endl;
+
+
+    // generating size x size kernel
+    cout << "Generatin kernel" << endl;
+    for (int x = -size/2; x <= size/2; x++) {
+        for (int y = -size/2; y <= size/2; y++) {
+            r = sqrt(x * x + y * y);
+            Point pt(x + size/2, y + size/2);
+            result.at<float>(pt) = (exp(-(r * r) / s)) / (M_PI * s);
+            sum += result.at<float>(pt);
+            cout << pt << ", " << result.at<float>(pt) << "\t";
+        }
+        cout << endl;
+    }
+    cout << sum << endl;
+
+    cout << "Check values 1 " << endl;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            Point pt(i, j);
+            cout << pt << ", " << result.at<float>(pt) << "\t";
+        }
+        cout << endl;
+    }
+    cout << endl;
 
     // normalization
-    for (int i = 0; i < 5; ++i)
-        for (int j = 0; j < 5; ++j)
-            GKernel[i][j] /= sum;
+    cout << "Normalization" << endl;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            Point pt = Point(i, j);
+            cout << pt << ", " << result.at<float>(pt) << ", " << result.at<float>(pt) / sum << "\t";
+            result.at<float>(pt) = result.at<float>(pt) / sum;
+            cout << pt << ", " << result.at<float>(pt) << "\t";
+        }
+        cout << endl;
+    }
+
+    cout << "Check values 2 " << endl;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            Point pt(i, j);
+            cout << pt << ", " << result.at<float>(i, j) << "\t";
+        }
+        cout << endl;
+    }
+
+    return result.clone();
 }
 
 int main()
 {
-    double GKernel[5][5];
-    FilterCreation(GKernel);
+    int size = 5;
+    Mat kernel_3x3 = FilterCreation(size);
 
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j)
-            cout << GKernel[i][j] << "\t";
+    cout << "Check values main" << endl;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            Point pt(i, j);
+            cout << pt << ", " << kernel_3x3.at<float>(i, j) << "\t";
+        }
         cout << endl;
     }
 }
+
+/*
+int main(int argc, char** argv)
+{
+    // Read image file
+    Mat image = imread("../Blue-Lotus.jpg");
+
+    // Check for failure
+    if (image.empty())
+    {
+        cout << "Could not open or find the image" << endl;
+        cin.get(); // wait for any key press
+        return -1;
+    }
+
+    // Blur the image with 3x3 Gaussian kernel
+    Mat image_blurred_with_3x3_kernel;
+    GaussianBlur(image, image_blurred_with_3x3_kernel, Size(3, 3), 0);
+
+    // Blus the image with 5x5 Gaussian kernel
+    Mat image_blurred_with_5x5_kernel;
+    GaussianBlur(image, image_blurred_with_5x5_kernel, Size(5, 5), 0);
+
+    // Window's names
+    String window_name = "Lotus";
+    String window_name_blurred_with_3x3_kernel = "Lotus Blurred with 3 x 3 Gaussian Kernel";
+    String window_name_blurred_with_5x5_kernel = "Lotus Blurred with 5 x 5 Gaussian Kernel";
+
+    // Create windows with above names
+    namedWindow(window_name);
+    namedWindow(window_name_blurred_with_3x3_kernel);
+    namedWindow(window_name_blurred_with_5x5_kernel);
+
+    // Show our images inside the created windows.
+    imshow(window_name, image);
+    imshow(window_name_blurred_with_3x3_kernel, image_blurred_with_3x3_kernel);
+    imshow(window_name_blurred_with_5x5_kernel, image_blurred_with_5x5_kernel);
+
+    waitKey(0); // Wait stroke
+    destroyAllWindows();
+    return 0;
+}
+ */
