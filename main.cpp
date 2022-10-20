@@ -60,17 +60,15 @@ Mat FilterCreation(int size)
     return result.clone();
 }
 
-int main()
+Mat ApplyGaussianBlur(Mat mat, Mat kernel, int size)
 {
-    int size = 5;
-    Mat kernel_3x3 = FilterCreation(size);
-
-    PrintMatValues(kernel_3x3, size, "Check values main");
+    //mat.size
 }
 
-/*
-int main(int argc, char** argv)
+int main()
 {
+    //PrintMatValues(kernel_3x3, size, "Check values main");
+
     // Read image file
     Mat image = imread("../Blue-Lotus.jpg");
 
@@ -82,12 +80,16 @@ int main(int argc, char** argv)
         return -1;
     }
 
+    cout << "Image channels: " << image.channels() << endl;
+    /*
     // Blur the image with 3x3 Gaussian kernel
     Mat image_blurred_with_3x3_kernel;
+    Mat kernel_3x3 = FilterCreation(3);
     GaussianBlur(image, image_blurred_with_3x3_kernel, Size(3, 3), 0);
 
     // Blus the image with 5x5 Gaussian kernel
     Mat image_blurred_with_5x5_kernel;
+    Mat kernel_5x5 = FilterCreation(5);
     GaussianBlur(image, image_blurred_with_5x5_kernel, Size(5, 5), 0);
 
     // Window's names
@@ -107,6 +109,6 @@ int main(int argc, char** argv)
 
     waitKey(0); // Wait stroke
     destroyAllWindows();
+     */
     return 0;
 }
- */
