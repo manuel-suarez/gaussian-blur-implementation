@@ -95,6 +95,31 @@ void ApplyGaussianBlur(const Mat& mat, Mat& dest, const Mat& kernel, int size) {
     }
 }
 
+void ApplyGaussianBlurAndShow(const Mat& image, int size)
+{
+    // Blur the image with 3x3 Gaussian kernel
+    Mat cv_image_blurred;
+    Mat custom_image_blurred;
+    Mat kernel = FilterCreation(size);
+    //PrintMatValues(kernel_3x3, 5, "Check values main");
+    ApplyGaussianBlur(image, custom_image_blurred, kernel, size);
+    GaussianBlur(image, cv_image_blurred, Size(size, size), 0);
+
+    // Window's names
+    stringstream window_name_blurred_cv;
+    stringstream window_name_blurred_custom;
+    window_name_blurred_cv << "Lotus Blurred with " << size << " x " << size << " Gaussian Kernel";
+    window_name_blurred_custom << "Lotus Blurred with " << size << " x " << size << " Gaussian Kernel (custom)";
+
+    // Create windows with above names
+    namedWindow(window_name_blurred_cv.str());
+    namedWindow(window_name_blurred_custom.str());
+
+    // Show our images inside the created windows.
+    imshow(window_name_blurred_cv.str(), cv_image_blurred);
+    imshow(window_name_blurred_custom.str(), custom_image_blurred);
+}
+
 int main()
 {
     // Read image file
@@ -117,41 +142,18 @@ int main()
     cout << "Min value: " << min << endl;
     cout << "Max value: " << max << endl;
 
-    // Blur the image with 3x3 Gaussian kernel
-    Mat image_blurred_with_3x3_kernel;
-    Mat custom_image_blurred_with_3x3_kernel;
-    Mat kernel_3x3 = FilterCreation(3);
-    //PrintMatValues(kernel_3x3, 5, "Check values main");
-    ApplyGaussianBlur(image, custom_image_blurred_with_3x3_kernel, kernel_3x3, 3);
-    GaussianBlur(image, image_blurred_with_3x3_kernel, Size(3, 3), 0);
-
-    // Blur the image with 5x5 Gaussian kernel
-    Mat image_blurred_with_5x5_kernel;
-    Mat custom_image_blurred_with_5x5_kernel;
-    Mat kernel_5x5 = FilterCreation(5);
-    ApplyGaussianBlur(image, custom_image_blurred_with_5x5_kernel, kernel_5x5, 5);
-    GaussianBlur(image, image_blurred_with_5x5_kernel, Size(5, 5), 0);
-
-    // Window's names
+    // Windows original image
     String window_name = "Lotus";
-    String window_name_blurred_with_3x3_kernel = "Lotus Blurred with 3 x 3 Gaussian Kernel";
-    String window_name_blurred_with_3x3_kernel_custom = "Lotus Blurred with 3 x 3 Gaussian Kernel (custom)";
-    String window_name_blurred_with_5x5_kernel = "Lotus Blurred with 5 x 5 Gaussian Kernel";
-    String window_name_blurred_with_5x5_kernel_custom = "Lotus Blurred with 5 x 5 Gaussian Kernel (custom)";
 
-    // Create windows with above names
+    // Create window
     namedWindow(window_name);
-    namedWindow(window_name_blurred_with_3x3_kernel_custom);
-    namedWindow(window_name_blurred_with_3x3_kernel);
-    namedWindow(window_name_blurred_with_5x5_kernel_custom);
-    namedWindow(window_name_blurred_with_5x5_kernel);
 
-    // Show our images inside the created windows.
+    // Show original image
     imshow(window_name, image);
-    imshow(window_name_blurred_with_3x3_kernel, image_blurred_with_3x3_kernel);
-    imshow(window_name_blurred_with_3x3_kernel_custom, custom_image_blurred_with_3x3_kernel);
-    imshow(window_name_blurred_with_5x5_kernel, image_blurred_with_5x5_kernel);
-    imshow(window_name_blurred_with_5x5_kernel_custom, custom_image_blurred_with_5x5_kernel);
+
+    // Blur the image with 3x3, 5x5 Gaussian kernel
+    ApplyGaussianBlurAndShow(image, 3);
+    ApplyGaussianBlurAndShow(image, 5);
 
     waitKey(0); // Wait stroke
     destroyAllWindows();
