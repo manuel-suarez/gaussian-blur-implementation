@@ -126,32 +126,32 @@ int main()
     GaussianBlur(image, image_blurred_with_3x3_kernel, Size(3, 3), 0);
 
     // Blur the image with 5x5 Gaussian kernel
-    /*Mat image_blurred_with_5x5_kernel;
+    Mat image_blurred_with_5x5_kernel;
     Mat custom_image_blurred_with_5x5_kernel;
     Mat kernel_5x5 = FilterCreation(5);
     ApplyGaussianBlur(image, custom_image_blurred_with_5x5_kernel, kernel_5x5, 5);
-    GaussianBlur(image, image_blurred_with_5x5_kernel, Size(5, 5), 0);*/
+    GaussianBlur(image, image_blurred_with_5x5_kernel, Size(5, 5), 0);
 
     // Window's names
     String window_name = "Lotus";
     String window_name_blurred_with_3x3_kernel = "Lotus Blurred with 3 x 3 Gaussian Kernel";
     String window_name_blurred_with_3x3_kernel_custom = "Lotus Blurred with 3 x 3 Gaussian Kernel (custom)";
-    //String window_name_blurred_with_5x5_kernel = "Lotus Blurred with 5 x 5 Gaussian Kernel";
-    //String window_name_blurred_with_5x5_kernel_custom = "Lotus Blurred with 5 x 5 Gaussian Kernel (custom)";
+    String window_name_blurred_with_5x5_kernel = "Lotus Blurred with 5 x 5 Gaussian Kernel";
+    String window_name_blurred_with_5x5_kernel_custom = "Lotus Blurred with 5 x 5 Gaussian Kernel (custom)";
 
     // Create windows with above names
     namedWindow(window_name);
     namedWindow(window_name_blurred_with_3x3_kernel_custom);
     namedWindow(window_name_blurred_with_3x3_kernel);
-    //namedWindow(window_name_blurred_with_5x5_kernel_custom);
-    //namedWindow(window_name_blurred_with_5x5_kernel);
+    namedWindow(window_name_blurred_with_5x5_kernel_custom);
+    namedWindow(window_name_blurred_with_5x5_kernel);
 
     // Show our images inside the created windows.
     imshow(window_name, image);
     imshow(window_name_blurred_with_3x3_kernel, image_blurred_with_3x3_kernel);
     imshow(window_name_blurred_with_3x3_kernel_custom, custom_image_blurred_with_3x3_kernel);
-    //imshow(window_name_blurred_with_5x5_kernel, image_blurred_with_5x5_kernel);
-    //imshow(window_name_blurred_with_5x5_kernel_custom, custom_image_blurred_with_5x5_kernel);
+    imshow(window_name_blurred_with_5x5_kernel, image_blurred_with_5x5_kernel);
+    imshow(window_name_blurred_with_5x5_kernel_custom, custom_image_blurred_with_5x5_kernel);
 
     waitKey(0); // Wait stroke
     destroyAllWindows();
