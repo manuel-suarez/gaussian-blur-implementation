@@ -60,9 +60,18 @@ Mat FilterCreation(int size)
     return result.clone();
 }
 
-Mat ApplyGaussianBlur(Mat mat, Mat dest, Mat kernel, int size)
+void ApplyGaussianBlur(const Mat& mat, Mat& dest, const Mat& kernel, int size)
 {
-    //mat.size
+    cout << "Apply gaussian blur size: " << size << endl;
+    dest = Mat::ones(mat.size[0], mat.size[1], mat.type());
+    for (int x = 0; x < mat.size[0]; x++) {
+
+    }
+
+    /*Vec3b intensity = img.at<Vec3b>(y, x);
+    uchar blue = intensity.val[0];
+    uchar green = intensity.val[1];
+    uchar red = intensity.val[2];*/
 }
 
 int main()
@@ -82,7 +91,12 @@ int main()
 
     cout << "Image channels: " << image.channels() << endl;
     cout << "Image dimensions: " << image.dims << endl;
+    cout << "Image type: " << image.type() << endl;
     cout << "Image size: " << image.size << endl;
+    double min, max;
+    cv::minMaxLoc(image, &min, &max);
+    cout << "Min value: " << min << endl;
+    cout << "Max value: " << max << endl;
 
     // Blur the image with 3x3 Gaussian kernel
     Mat image_blurred_with_3x3_kernel;
@@ -90,7 +104,7 @@ int main()
     ApplyGaussianBlur(image, image_blurred_with_3x3_kernel, kernel_3x3, 3);
     //GaussianBlur(image, image_blurred_with_3x3_kernel, Size(3, 3), 0);
 
-    // Blus the image with 5x5 Gaussian kernel
+    // Blur the image with 5x5 Gaussian kernel
     Mat image_blurred_with_5x5_kernel;
     Mat kernel_5x5 = FilterCreation(5);
     ApplyGaussianBlur(image, image_blurred_with_5x5_kernel, kernel_5x5, 5);
@@ -113,6 +127,6 @@ int main()
 
     waitKey(0); // Wait stroke
     destroyAllWindows();
-     */
+
     return 0;
 }
