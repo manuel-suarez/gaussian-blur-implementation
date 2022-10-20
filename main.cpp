@@ -64,28 +64,28 @@ void ApplyGaussianBlur(const Mat& mat, Mat& dest, const Mat& kernel, int size)
 {
     cout << "Apply gaussian blur size: " << size << endl;
     dest = Mat::ones(mat.size[0], mat.size[1], mat.type());
-    for (int x = 0; x < mat.size[0]; x++) {
-        for (int y = 0; y < mat.size[1]; y++) {
+    for (int x = size/2; x < mat.size[0] - size/2; x++) {
+        for (int y = size/2; y < mat.size[1] - size/2; y++) {
             // Aplicamos kernel en el punto p con su vencidad N(q)
             Point p(y,x);
             // Calculamos kernel
-            //uchar tc1, tc2, tc3;
-            //tc1 = tc2 = tc3 = 0;
-            //for (int i = -size/2; i < size/2; i++) {
-            //    for (int j = -size/2; j < size/2; j++) {
+            uchar tc1, tc2, tc3;
+            tc1 = tc2 = tc3 = 0;
+            for (int i = -size/2; i < size/2; i++) {
+                for (int j = -size/2; j < size/2; j++) {
                     // Obtenemos punto q de la vecindad de p
-            //        Point q(x+i,y+j);
+                    Point q(y+j,x+i);
                     // Obtenemos intensidad de color en la posición (x+i,y+j)
-                    //Vec3b q_intensity = mat.at<Vec3b>(q);
-                    //tc1 += uchar(q_intensity.val[0] * kernel.at<float>(q));
-                    //tc2 += uchar(q_intensity.val[1] * kernel.at<float>(q));
-                    //tc3 += uchar(q_intensity.val[2] * kernel.at<float>(q));
-            //    }
-            //}
+                    Vec3b q_intensity = mat.at<Vec3b>(q);
+                    tc1 += uchar(q_intensity.val[0] * kernel.at<float>(i+size/2, j+size/2));
+                    tc2 += uchar(q_intensity.val[1] * kernel.at<float>(i+size/2, j+size/2));
+                    tc3 += uchar(q_intensity.val[2] * kernel.at<float>(i+size/2, j+size/2));
+                }
+            }
             Vec3b intensity = mat.at<Vec3b>(p);
-            //intensity.val[0] = tc1;
-            //intensity.val[1] = tc2;
-            //intensity.val[2] = tc3;
+            intensity.val[0] = tc1;
+            intensity.val[1] = tc2;
+            intensity.val[2] = tc3;
             dest.at<Vec3b>(p) = intensity;
         }
     }
