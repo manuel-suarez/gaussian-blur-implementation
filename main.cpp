@@ -30,3 +30,15 @@ void FilterCreation(double GKernel[][5])
         for (int j = 0; j < 5; ++j)
             GKernel[i][j] /= sum;
 }
+
+int main()
+{
+    double GKernel[5][5];
+    FilterCreation(GKernel);
+
+    for (int i = 0; i < 5; ++i) {
+        for (int j = 0; j < 5; ++j)
+            cout << GKernel[i][j] << "\t";
+        cout << endl;
+    }
+}
