@@ -26,8 +26,8 @@ void PrintMatValues(const Mat &mat, int size, String msg = "Check values") {
 Mat FilterCreation(int size)
 {
     // initialising standard deviation to 1.0
-    double sigma = 1.0;
-    double r, s = 2.0 * sigma * sigma;
+    double sigma = 0.3*((size-1)*0.5 - 1) + 0.8;
+    double r, s = 2 * sigma * sigma;
 
     // sum is for normalization
     double sum = 0.0;
@@ -61,7 +61,7 @@ Mat FilterCreation(int size)
 }
 
 void ApplyGaussianBlur(const Mat& mat, Mat& dest, const Mat& kernel, int size) {
-    PrintMatValues(kernel, size, "Check values kernel");
+    //PrintMatValues(kernel, size, "Check values kernel");
     cout << "Apply gaussian blur size: " << size << endl;
     dest = Mat::zeros(mat.rows, mat.cols, mat.type());
 
@@ -85,11 +85,7 @@ void ApplyGaussianBlur(const Mat& mat, Mat& dest, const Mat& kernel, int size) {
                     tc3 += q_intensity.val[2]/255.0 * kernel.at<float>(i+size/2, j+size/2);
                 }
             }
-            //Vec3b intensity = mat.at<Vec3b>(x, y);
-            //intensity.val[0] = uchar(tc1 * 255.0);
-            //intensity.val[1] = uchar(tc2 * 255.0);
-            //intensity.val[2] = uchar(tc3 * 255.0);*/
-            Vec3b intensity(uchar(tc1 * 255.0), uchar(tc2 * 255.0), uchar(tc3 * 255.0));
+            Vec3b intensity(tc1 * 255.0, tc2 * 255.0, tc3 * 255.0);
             dest.at<Vec3b>(x, y) = intensity;
         }
     }
@@ -104,6 +100,8 @@ void ApplyGaussianBlurAndShow(const Mat& image, int size)
     //PrintMatValues(kernel_3x3, 5, "Check values main");
     ApplyGaussianBlur(image, custom_image_blurred, kernel, size);
     GaussianBlur(image, cv_image_blurred, Size(size, size), 0);
+    Mat kernel_cv = getGaussianKernel(size, 0);
+    //PrintMatValues(kernel_cv, size, "Check cv kernel");
 
     // Window's names
     stringstream window_name_blurred_cv;
@@ -154,6 +152,7 @@ int main()
     // Blur the image with 3x3, 5x5 Gaussian kernel
     ApplyGaussianBlurAndShow(image, 3);
     ApplyGaussianBlurAndShow(image, 5);
+    ApplyGaussianBlurAndShow(image, 9);
 
     waitKey(0); // Wait stroke
     destroyAllWindows();
