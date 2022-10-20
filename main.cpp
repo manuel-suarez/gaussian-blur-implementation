@@ -11,6 +11,18 @@ using namespace std;
 
 using namespace std;
 
+void PrintMatValues(Mat &mat, int size, String msg = "Check values") {
+    cout << msg << endl;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            Point pt(i, j);
+            cout << pt << ", " << mat.at<float>(pt) << "\t";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
 Mat FilterCreation(int size)
 {
     // initialising standard deviation to 1.0
@@ -22,62 +34,29 @@ Mat FilterCreation(int size)
 
     // result
     Mat result = Mat::zeros(size, size, CV_32F);
-    cout << "Check values 0" << endl;
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            Point pt(i, j);
-            cout << pt << ", " << result.at<float>(pt) << "\t";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
+    //PrintMatValues(result, size, "Check values 0");
 
     // generating size x size kernel
-    cout << "Generatin kernel" << endl;
     for (int x = -size/2; x <= size/2; x++) {
         for (int y = -size/2; y <= size/2; y++) {
             r = sqrt(x * x + y * y);
             Point pt(x + size/2, y + size/2);
             result.at<float>(pt) = (exp(-(r * r) / s)) / (M_PI * s);
             sum += result.at<float>(pt);
-            cout << pt << ", " << result.at<float>(pt) << "\t";
         }
-        cout << endl;
     }
-    cout << sum << endl;
 
-    cout << "Check values 1 " << endl;
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            Point pt(i, j);
-            cout << pt << ", " << result.at<float>(pt) << "\t";
-        }
-        cout << endl;
-    }
-    cout << endl;
+    //PrintMatValues(result, size, "Check values 1");
 
     // normalization
-    cout << "Normalization" << endl;
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
             Point pt = Point(i, j);
-            cout << pt << ", " << result.at<float>(pt) << ", " << result.at<float>(pt) / sum << "\t";
             result.at<float>(pt) = result.at<float>(pt) / sum;
-            cout << pt << ", " << result.at<float>(pt) << "\t";
         }
-        cout << endl;
     }
 
-    cout << "Check values 2 " << endl;
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            Point pt(i, j);
-            cout << pt << ", " << result.at<float>(i, j) << "\t";
-        }
-        cout << endl;
-    }
-
+    //PrintMatValues(result, size, "Check values 2");
     return result.clone();
 }
 
@@ -86,14 +65,7 @@ int main()
     int size = 5;
     Mat kernel_3x3 = FilterCreation(size);
 
-    cout << "Check values main" << endl;
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            Point pt(i, j);
-            cout << pt << ", " << kernel_3x3.at<float>(i, j) << "\t";
-        }
-        cout << endl;
-    }
+    PrintMatValues(kernel_3x3, size, "Check values main");
 }
 
 /*
