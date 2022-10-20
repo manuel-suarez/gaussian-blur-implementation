@@ -11,7 +11,7 @@ using namespace std;
 
 using namespace std;
 
-void PrintMatValues(Mat &mat, int size, String msg = "Check values") {
+void PrintMatValues(const Mat &mat, int size, String msg = "Check values") {
     cout << msg << endl;
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
@@ -60,41 +60,43 @@ Mat FilterCreation(int size)
     return result.clone();
 }
 
-void ApplyGaussianBlur(const Mat& mat, Mat& dest, const Mat& kernel, int size)
-{
+void ApplyGaussianBlur(const Mat& mat, Mat& dest, const Mat& kernel, int size) {
+    PrintMatValues(kernel, size, "Check values kernel");
     cout << "Apply gaussian blur size: " << size << endl;
-    dest = Mat::ones(mat.size[0], mat.size[1], mat.type());
-    for (int x = size/2; x < mat.size[0] - size/2; x++) {
-        for (int y = size/2; y < mat.size[1] - size/2; y++) {
+    dest = Mat::zeros(mat.rows, mat.cols, mat.type());
+
+    for (int x = 0; x < mat.rows; x++) {
+        for (int y = 0; y < mat.cols; y++) {
             // Aplicamos kernel en el punto p con su vencidad N(q)
-            Point p(y,x);
+            if (x < size/2 || y < size/2 || (x >= mat.rows - size/2) || (y >= mat.cols - size/2)) {
+                Vec3b intensity = mat.at<Vec3b>(x, y);
+                dest.at<Vec3b>(x, y) = intensity;
+                continue;
+            }
             // Calculamos kernel
-            uchar tc1, tc2, tc3;
-            tc1 = tc2 = tc3 = 0;
-            for (int i = -size/2; i < size/2; i++) {
-                for (int j = -size/2; j < size/2; j++) {
-                    // Obtenemos punto q de la vecindad de p
-                    Point q(y+j,x+i);
+            double tc1, tc2, tc3;
+            tc1 = tc2 = tc3 = 0.0;
+            for (int i = -size/2; i <= size/2; i++) {
+                for (int j = -size/2; j <= size/2; j++) {
                     // Obtenemos intensidad de color en la posición (x+i,y+j)
-                    Vec3b q_intensity = mat.at<Vec3b>(q);
-                    tc1 += uchar(q_intensity.val[0] * kernel.at<float>(i+size/2, j+size/2));
-                    tc2 += uchar(q_intensity.val[1] * kernel.at<float>(i+size/2, j+size/2));
-                    tc3 += uchar(q_intensity.val[2] * kernel.at<float>(i+size/2, j+size/2));
+                    Vec3b q_intensity = mat.at<Vec3b>(x+i, y+j);
+                    tc1 += q_intensity.val[0]/255.0 * kernel.at<float>(i+size/2, j+size/2);
+                    tc2 += q_intensity.val[1]/255.0 * kernel.at<float>(i+size/2, j+size/2);
+                    tc3 += q_intensity.val[2]/255.0 * kernel.at<float>(i+size/2, j+size/2);
                 }
             }
-            Vec3b intensity = mat.at<Vec3b>(p);
-            intensity.val[0] = tc1;
-            intensity.val[1] = tc2;
-            intensity.val[2] = tc3;
-            dest.at<Vec3b>(p) = intensity;
+            //Vec3b intensity = mat.at<Vec3b>(x, y);
+            //intensity.val[0] = uchar(tc1 * 255.0);
+            //intensity.val[1] = uchar(tc2 * 255.0);
+            //intensity.val[2] = uchar(tc3 * 255.0);*/
+            Vec3b intensity(uchar(tc1 * 255.0), uchar(tc2 * 255.0), uchar(tc3 * 255.0));
+            dest.at<Vec3b>(x, y) = intensity;
         }
     }
 }
 
 int main()
 {
-    //PrintMatValues(kernel_3x3, size, "Check values main");
-
     // Read image file
     Mat image = imread("../Blue-Lotus.jpg");
 
@@ -117,30 +119,39 @@ int main()
 
     // Blur the image with 3x3 Gaussian kernel
     Mat image_blurred_with_3x3_kernel;
+    Mat custom_image_blurred_with_3x3_kernel;
     Mat kernel_3x3 = FilterCreation(3);
-    ApplyGaussianBlur(image, image_blurred_with_3x3_kernel, kernel_3x3, 3);
-    //GaussianBlur(image, image_blurred_with_3x3_kernel, Size(3, 3), 0);
+    //PrintMatValues(kernel_3x3, 5, "Check values main");
+    ApplyGaussianBlur(image, custom_image_blurred_with_3x3_kernel, kernel_3x3, 3);
+    GaussianBlur(image, image_blurred_with_3x3_kernel, Size(3, 3), 0);
 
     // Blur the image with 5x5 Gaussian kernel
-    Mat image_blurred_with_5x5_kernel;
+    /*Mat image_blurred_with_5x5_kernel;
+    Mat custom_image_blurred_with_5x5_kernel;
     Mat kernel_5x5 = FilterCreation(5);
-    ApplyGaussianBlur(image, image_blurred_with_5x5_kernel, kernel_5x5, 5);
-    //GaussianBlur(image, image_blurred_with_5x5_kernel, Size(5, 5), 0);
+    ApplyGaussianBlur(image, custom_image_blurred_with_5x5_kernel, kernel_5x5, 5);
+    GaussianBlur(image, image_blurred_with_5x5_kernel, Size(5, 5), 0);*/
 
     // Window's names
     String window_name = "Lotus";
     String window_name_blurred_with_3x3_kernel = "Lotus Blurred with 3 x 3 Gaussian Kernel";
-    String window_name_blurred_with_5x5_kernel = "Lotus Blurred with 5 x 5 Gaussian Kernel";
+    String window_name_blurred_with_3x3_kernel_custom = "Lotus Blurred with 3 x 3 Gaussian Kernel (custom)";
+    //String window_name_blurred_with_5x5_kernel = "Lotus Blurred with 5 x 5 Gaussian Kernel";
+    //String window_name_blurred_with_5x5_kernel_custom = "Lotus Blurred with 5 x 5 Gaussian Kernel (custom)";
 
     // Create windows with above names
     namedWindow(window_name);
+    namedWindow(window_name_blurred_with_3x3_kernel_custom);
     namedWindow(window_name_blurred_with_3x3_kernel);
-    namedWindow(window_name_blurred_with_5x5_kernel);
+    //namedWindow(window_name_blurred_with_5x5_kernel_custom);
+    //namedWindow(window_name_blurred_with_5x5_kernel);
 
     // Show our images inside the created windows.
     imshow(window_name, image);
     imshow(window_name_blurred_with_3x3_kernel, image_blurred_with_3x3_kernel);
-    imshow(window_name_blurred_with_5x5_kernel, image_blurred_with_5x5_kernel);
+    imshow(window_name_blurred_with_3x3_kernel_custom, custom_image_blurred_with_3x3_kernel);
+    //imshow(window_name_blurred_with_5x5_kernel, image_blurred_with_5x5_kernel);
+    //imshow(window_name_blurred_with_5x5_kernel_custom, custom_image_blurred_with_5x5_kernel);
 
     waitKey(0); // Wait stroke
     destroyAllWindows();
